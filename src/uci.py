@@ -11,7 +11,7 @@ class UCI:
   
   async def loop(self):
     while True:
-      command, options = input().split(maxsplit=1)
+      command, *options = input().split(maxsplit=1)
       if command == 'uci':
         print(f"id name {ENGINE_NAME} {'.'.join(map(str, ENGINE_VERSION))}\n"
               f"id author {' '.join(ENGINE_AUTHORS)}\n"
@@ -19,13 +19,12 @@ class UCI:
         
       if command == 'position' and options:
         pos, _, moves = options.partition(' moves ')
-        print(pos, moves)
         self.engine.set_position(pos)
         if len(moves) > 0:
           self.engine.play_moves(moves.split())
           
       if command == 'go':
-        asyncio.run(self.engine.go())
+        await self.engine.go()
         
       if command == 'quit':
         break
